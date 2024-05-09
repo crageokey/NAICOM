@@ -1,0 +1,469 @@
+SELECT '' Filters
+       ,'' CorrValues
+       ,CONVERT(VARCHAR(12), CommencementDate.DateValue, 103) CoverageStart
+       ,CONVERT(VARCHAR(12), PolicyMaturityDate.DateValue, 103) CoverageEnd
+       ,AsPolicy.PolicyNumber InternalPolicyNo
+	   ,CASE 
+              WHEN AsPlan.PlanName = 'Family Funeral Plan'
+                     THEN 'Family'
+              ELSE CASE 
+                           WHEN AsPlan.PlanName = 'Short Term Savings Plan'
+                                  THEN 'Savings'
+                           ELSE CASE 
+                                         WHEN AsPlan.PlanName = 'Term Plan'
+                                                THEN 'Term'
+                                         ELSE CASE 
+                                                       WHEN AsPlan.PlanName = 'Savings Plan'
+                                                              THEN 'Savings'
+														ELSE CASE 
+																	WHEN AsPlan.PlanName = 'Critical Illness Plan'
+																			THEN 'Critical'
+																	END
+                                                       END
+                                         END
+                           END
+              END Type
+       ---,AsCode.ShortDescription STATUS
+	   ,PolicyOwner.LastName Surname
+       ,PolicyOwner.MiddleInitial Middlename
+       ,PolicyOwner.FirstName FirstName
+       ,PostalAddress.PostalAddress AddressLine
+       ,'' City
+       ,'' PostCode
+       ,CONVERT(VARCHAR(12), PolicyOwner.DateOfBirth, 103) DateOfBirth
+       ,'' BirthPlace
+       ,StateOfOrigin.optiontext STATE	
+       ,'' phone_Work
+       ,'' Phone_Home
+       ,CAST(MobilePhone.textValue AS TEXT) Phone_Mobile
+       ,EmailAddress.textValue Email
+       ,Gender.OptionText Sex	   
+       ,Nationality.optiontext Nationality
+       ,IdentityType.optiontext IDType
+       ,IdentificationNumber.textvalue IDNo
+       ,Occupation.TextValue Occupation
+       ,MaritalStatusClientField.OptionText MaritalStatus
+       ,'' Education
+       ,'' ProductName
+       ,'' ProductType
+,CASE 
+              WHEN MedicalsWaived.textValue = 'CHECKED'
+                     THEN 'YES'
+              ELSE CASE 
+                           WHEN MedicalsWaived.textValue = 'UNCHECKED'
+                                  THEN 'NO'
+                           END
+              END MedicalCondition
+       ,'' MedicalHistory
+       ,'' AnnualEmolument
+       ,'' AnnuityType
+       ,'' AnnuityAmount
+       ,'' EntryAge
+       ,'' PensionPlan
+	   ,'' MortgagePortfolio
+       ,'' MortgageValue
+	   ,CONVERT(VARCHAR(40), (CONVERT(DECIMAL(17, 2), (ROUND(BenefitAmount.FloatValue, 2))))) InsuredValue
+       ,CONVERT(VARCHAR(40), COALESCE((TOTGROSPR.TotalGross), 0)) AS TotalPremium
+       ,Bene1.FirstName Ben1Name
+       ,Bene1PostalAddress.PostalAddress  Bene1Address
+	   ,CONVERT(VARCHAR(12), Bene1.DateOfBirth, 103) Ben1DateOfBirth
+	   ,Bene1Gender.OptionText Bene1Gender
+       ,Bene1MobilePhone.textValue Ben1Phone
+       ,Bene1EmailAddress.textValue Ben1Email
+       ,Bene1IdentityType.OptionText Ben1IDType
+       ,Bene1IdentificationNumber.textValue Ben1IDNO
+       ,'' Ben1Relationship
+       ,'' Benefit1Proportion
+       ,'' Note
+       ,Bene2.FirstName Ben2Name
+       ,Bene2PostalAddress.PostalAddress Bene2Address
+       ,CONVERT(VARCHAR(12), Bene2.DateOfBirth, 103) Ben2DateOfBirth
+	   ,Bene2Gender.OptionText Bene2Gender
+       ,Bene2MobilePhone.textValue Ben2Phone
+       ,Bene2EmailAddress.textValue Ben2Email
+       ,Bene2IdentityType.OptionText Ben2IDType
+       ,Bene2IdentificationNumber.textValue Ben2IDNO
+       ,'' Ben2Relationship
+       ,'' Benefit2Proportions
+       ,'' Note
+       ,Bene3.FirstName Ben3Name
+       ,Bene3PostalAddress.PostalAddress Bene3Address
+	   ,CONVERT(VARCHAR(12), Bene3.DateOfBirth, 103) Ben3DateOfBirth
+	   ,Bene3Gender.OptionText Bene3Gender
+       ,Bene3MobilePhone.textValue Ben3Phone
+       ,Bene3EmailAddress.textValue Ben3Email
+       ,Bene3IdentityType.optiontext Ben3IDType
+       ,Bene2IdentificationNumber.textValue Ben3IDNO
+       ,'' Ben3Relationship
+       ,'' Benefit3Proportions
+       ,'' Note
+       ,CASE 
+              WHEN IsNull(CONVERT(VARCHAR(40), ContractStartDate.DateValue), 1) = '1'
+                     THEN CONVERT(VARCHAR(40), replace(12 * 0, ',', ' '))
+              ELSE CASE 
+                           WHEN IsNull(CONVERT(VARCHAR(40), ContractStartDate.DateValue), 1) = ContractStartDate.DateValue
+                                  AND CONVERT(VARCHAR(40), PaymentFrequency.textValue) = '12'
+                                  THEN CONVERT(VARCHAR(40), replace(12 * MonthlyPremium.FloatValue, ',', ' '))
+                           WHEN IsNull(CONVERT(VARCHAR(40), ContractStartDate.DateValue), 1) = ContractStartDate.DateValue
+                                  AND CONVERT(VARCHAR(40), PaymentFrequency.textValue) = '04'
+                                  THEN CONVERT(VARCHAR(40), replace(4 * MonthlyPremium.FloatValue, ',', ' '))
+                           WHEN IsNull(CONVERT(VARCHAR(40), ContractStartDate.DateValue), 1) = ContractStartDate.DateValue
+                                  AND CONVERT(VARCHAR(40), PaymentFrequency.textValue) = '52'
+                                  THEN CONVERT(VARCHAR(40), replace(52 * MonthlyPremium.FloatValue, ',', ' '))
+                           WHEN IsNull(CONVERT(VARCHAR(40), ContractStartDate.DateValue), 1) = ContractStartDate.DateValue
+                                  AND CONVERT(VARCHAR(40), PaymentFrequency.textValue) = '01'
+                                  THEN CONVERT(VARCHAR(40), replace(1 * MonthlyPremium.FloatValue, ',', ' '))
+                           WHEN IsNull(CONVERT(VARCHAR(40), ContractStartDate.DateValue), 1) = ContractStartDate.DateValue
+                                  AND IsNull(CONVERT(VARCHAR(40), ContractStartDate.DateValue), 1) = ContractStartDate.DateValue
+                                  AND CONVERT(VARCHAR(40), PaymentFrequency.textValue) = '02'
+                                  THEN CONVERT(VARCHAR(40), replace(2 * MonthlyPremium.FloatValue, ',', ' '))
+                           WHEN IsNull(CONVERT(VARCHAR(40), ContractStartDate.DateValue), 1) = ContractStartDate.DateValue
+                                  AND CONVERT(VARCHAR(40), PaymentFrequency.textValue) = '02'
+                                  THEN CONVERT(VARCHAR(40), replace(2 * MonthlyPremium.FloatValue, ',', ' '))
+                           WHEN IsNull(CONVERT(VARCHAR(40), ContractStartDate.DateValue), 1) = ContractStartDate.DateValue
+                                  AND CONVERT(VARCHAR(40), PaymentFrequency.textValue) = '00'
+                                  THEN CONVERT(VARCHAR(40), replace(0 * MonthlyPremium.FloatValue, ',', ' '))
+                           END
+              END AnnualPaymentIssued
+FROM AsPolicy
+JOIN AsCode ON AsCode.CodeValue = AsPolicy.StatusCode
+       AND AsCode.CodeName = 'AsCodeStatus'
+JOIN AsPolicyField ClientSignedDate ON ClientSignedDate.PolicyGUID = AsPolicy.PolicyGUID
+       AND ClientSignedDate.FieldName = 'ClientSignedDate'
+JOIN AsPolicyField WorksiteCode ON WorksiteCode.PolicyGUID = AsPolicy.PolicyGUID
+       AND WorksiteCode.FieldName = 'WorksiteCode'
+JOIN AsPolicyField SchemeCode ON SchemeCode.PolicyGUID = AsPolicy.PolicyGUID
+       AND SchemeCode.FieldName = 'SchemeCode'
+LEFT JOIN AsPolicyField SavingsGoal ON SavingsGoal.PolicyGUID = AsPolicy.PolicyGUID
+       AND SavingsGoal.FieldName = 'SavingsGoal'
+LEFT JOIN AsPolicyField BenefitAmount ON BenefitAmount.PolicyGUID = AsPolicy.PolicyGUID
+       AND BenefitAmount.FieldName = 'BenefitAmount'
+LEFT JOIN AsPolicyField Term ON Term.PolicyGUID = AsPolicy.PolicyGUID
+       AND Term.FieldName IN (
+              'Term'
+              ,'PolicyTerm'
+              )
+LEFT JOIN AsPolicyField PolicyTerm ON PolicyTerm.PolicyGUID = AsPolicy.PolicyGUID
+       AND PolicyTerm.FieldName = 'PolicyTerm'
+LEFT JOIN AsPolicyField PaymentFrequency ON PaymentFrequency.PolicyGUID = AsPolicy.PolicyGUID
+       AND PaymentFrequency.FieldName = 'PaymentFrequency'
+LEFT JOIN AsPolicyField DeductionAmount ON DeductionAmount.PolicyGUID = AsPolicy.PolicyGUID
+       AND DeductionAmount.FieldName = 'DeductionAmount'
+LEFT JOIN AsPolicyField MonthlyPremium ON MonthlyPremium.PolicyGUID = AsPolicy.PolicyGUID
+       AND MonthlyPremium.FieldName = 'MonthlyPremium'
+LEFT JOIN AsPolicyField ContractStartDate ON ContractStartDate.PolicyGUID = AsPolicy.PolicyGUID
+       AND ContractStartDate.FieldName = 'ContractStartDate'
+LEFT JOIN AsPolicyField PaymentMethod ON PaymentMethod.PolicyGUID = AsPolicy.PolicyGUID
+       AND PaymentMethod.FieldName = 'PaymentMethod'
+LEFT JOIN AsPolicyField PayPointID ON PayPointID.PolicyGUID = AsPolicy.PolicyGUID
+       AND PayPointID.FieldName = 'PayPointID'
+LEFT JOIN AsPolicyField PolicyType ON PolicyType.PolicyGUID = AsPolicy.PolicyGUID
+       AND PolicyType.FieldName = 'PolicyType'
+LEFT JOIN AsPolicyField PolicyBusinessType ON PolicyBusinessType.PolicyGUID = AsPolicy.PolicyGUID
+       AND PolicyBusinessType.FieldName = 'PolicyBusinessType'
+LEFT JOIN AsPolicyField IncreasePercentage ON IncreasePercentage.PolicyGUID = AsPolicy.PolicyGUID
+       AND IncreasePercentage.FieldName = 'IncreasePercentage'
+LEFT JOIN AsPolicyField API ON API.PolicyGUID = AsPolicy.PolicyGUID
+       AND API.FieldName = 'API'
+LEFT JOIN AsPolicyField CommencementDate ON CommencementDate.PolicyGUID = AsPolicy.PolicyGUID
+       AND CommencementDate.FieldName = 'ContractStartDate'
+LEFT JOIN AsRole AgentRole ON AgentRole.PolicyGUID = AsPolicy.PolicyGUID
+       AND AgentRole.RoleCode = '82'
+       AND AgentRole.StatusCode = '01'
+LEFT JOIN AsClient Agent ON AgentRole.ClientGUID = Agent.ClientGUID
+LEFT JOIN asclientfield AS RASalesTeam ON RASalesTeam.clientguid = Agent.ClientGUID
+       AND RASalesTeam.fieldname = 'Salesteam'
+LEFT JOIN asclient AS sales ON cast(sales.clientguid AS VARCHAR(50)) = RASalesTeam.textValue
+LEFT JOIN AsClientField ContractID ON AgentRole.ClientGUID = ContractID.ClientGUID
+       AND ContractID.FieldName = 'AgentCode'
+LEFT JOIN AsClientField RAContractID ON AgentRole.ClientGUID = RAContractID.ClientGUID
+       AND RAContractID.FieldName = 'RAAgentCode'
+LEFT JOIN AsClientField MarketSegment ON AgentRole.ClientGUID = MarketSegment.ClientGUID
+       AND MarketSegment.FieldName = 'MarketSegment'
+LEFT JOIN AsClientField Paypoint ON PayPointID.textvalue = Paypoint.textValue
+       AND Paypoint.FieldName = 'PayPointID'
+LEFT JOIN AsPolicyField StatusChange ON StatusChange.PolicyGUID = AsPolicy.PolicyGUID
+       AND StatusChange.FieldName = 'StatusChangeDate'
+LEFT JOIN AsPolicyField PaidToDate ON PaidToDate.PolicyGUID = AsPolicy.PolicyGUID
+       AND PaidToDate.FieldName = 'PaidToDate'
+LEFT JOIN AsPolicyField PaidPremiumCount ON PaidPremiumCount.PolicyGUID = AsPolicy.PolicyGUID
+       AND PaidPremiumCount.FieldName = 'PaidPremiumCount'
+LEFT JOIN AsPolicyField MandateStart ON MandateStart.PolicyGUID = AsPolicy.PolicyGUID
+       AND MandateStart.FieldName = 'MandateStartDate'
+LEFT JOIN AsPolicyField FirstDeductionDate ON FirstDeductionDate.PolicyGUID = AsPolicy.PolicyGUID
+       AND FirstDeductionDate.FieldName = 'FirstDeductionDate'
+LEFT JOIN AsPolicyField AccountNumber ON AccountNumber.PolicyGUID = AsPolicy.PolicyGUID
+       AND AccountNumber.FieldName = 'AccountNumber'
+LEFT JOIN AsPolicyField AccountType ON AccountType.PolicyGUID = AsPolicy.PolicyGUID
+       AND AccountType.FieldName = 'AccountType'
+LEFT JOIN AsPolicyField BankBranchName ON BankBranchName.PolicyGUID = AsPolicy.PolicyGUID
+       AND BankBranchName.FieldName = 'BranchName'
+LEFT JOIN AsPolicyField BankName ON BankName.PolicyGUID = AsPolicy.PolicyGUID
+       AND BankName.FieldName = 'BankName'
+LEFT JOIN AsPolicyField EmployeeReferenceNumber ON EmployeeReferenceNumber.PolicyGUID = AsPolicy.PolicyGUID
+       AND EmployeeReferenceNumber.FieldName = 'EmployeeReferenceNumber'
+LEFT JOIN AsPolicyField CombineIndicator ON CombineIndicator.PolicyGUID = AsPolicy.PolicyGUID
+       AND CombineIndicator.FieldName = 'CombineIndicator'
+LEFT JOIN AsPolicyField LeadCode ON LeadCode.PolicyGUID = AsPolicy.PolicyGUID
+       AND LeadCode.FieldName = 'LeadCode'
+LEFT JOIN AsPolicyField PEP ON PEP.PolicyGUID = AsPolicy.PolicyGUID
+       AND PEP.FieldName = 'PEPCheck'
+LEFT JOIN AsPolicyField AML ON AML.PolicyGUID = AsPolicy.PolicyGUID
+       AND AML.FieldName = 'OverallMoneyLaunderingRiskAssessment'
+LEFT JOIN AsClient PaypointName ON PaypointName.ClientGUID = Paypoint.ClientGUID
+       AND PaypointName.TypeCode = '30'
+JOIN AsPlan ON AsPlan.PlanGUID = AsPolicy.PlanGUID
+LEFT JOIN AsClientField BranchGUID ON BranchGUID.ClientGUID = Agent.ClientGUID
+       AND BranchGUID.FieldName = 'ControllingBranch'
+LEFT JOIN AsClient BranchName ON BranchName.ClientGUID = BranchGUID.textValue
+LEFT JOIN AsClientField BranchCode ON BranchCode.ClientGUID = BranchName.ClientGUID
+       AND BranchCode.FieldName = 'BranchCode'
+LEFT JOIN AsClientField AreaGUID ON AreaGUID.ClientGUID = BranchName.ClientGUID
+       AND AreaGUID.FieldName = 'ControllingArea'
+LEFT JOIN AsClient AreaName ON AreaName.ClientGUID = AreaGUID.textValue
+LEFT JOIN AsClientField RegionGUID ON RegionGUID.ClientGUID = AreaName.ClientGUID
+       AND RegionGUID.FieldName = 'ControllingRegion'
+LEFT JOIN AsClient RegionName ON RegionName.ClientGUID = RegionGUID.textValue
+LEFT JOIN AsRole OwnerRole ON OwnerRole.PolicyGUID = AsPolicy.PolicyGUID
+       AND OwnerRole.RoleCode = '01'
+       AND OwnerRole.StatusCode = '01'
+LEFT JOIN (SELECT AsRole.RoleGUID, Asrole.PolicyGUID,AsClient.*
+                           ,Row_number() OVER (
+                                  PARTITION BY AsRole.PolicyGUID ORDER BY AsRole.RoleGUID ASC
+                                  ) RowNum
+                     FROM Asrole
+                     JOIN AsClient ON AsCLient.ClientGUID = AsRole.ClientGUID
+                     JOIN AsPolicy ON AsPolicy.PolicyGUID = AsRole.PolicyGUID AND AsRole.RoleCode = '78' AND AsRole.StatusCode = '01'
+                     ) AS Bene1 ON Bene1.PolicyGUID = AsPolicy.PolicyGUID AND Bene1.RowNum = 1
+LEFT JOIN (SELECT AsRole.RoleGUID, Asrole.PolicyGUID, AsClient.*
+                           ,Row_number() OVER (
+                                  PARTITION BY AsRole.PolicyGUID ORDER BY AsRole.RoleGUID ASC
+                                  ) RowNum
+                     FROM Asrole
+                     JOIN AsClient ON AsCLient.ClientGUID = AsRole.ClientGUID
+                     JOIN AsPolicy ON AsPolicy.PolicyGUID = AsRole.PolicyGUID AND AsRole.RoleCode = '78' AND AsRole.StatusCode = '01'
+                     ) AS Bene2 ON Bene2.PolicyGUID = AsPolicy.PolicyGUID AND Bene2.RowNum = 2
+LEFT JOIN (SELECT AsRole.RoleGUID, Asrole.PolicyGUID,AsClient.*
+                           ,Row_number() OVER (
+                                  PARTITION BY AsRole.PolicyGUID ORDER BY AsRole.RoleGUID ASC
+                                  ) RowNum
+                     FROM Asrole
+                     JOIN AsClient ON AsCLient.ClientGUID = AsRole.ClientGUID
+                     JOIN AsPolicy ON AsPolicy.PolicyGUID = AsRole.PolicyGUID AND AsRole.RoleCode = '78' AND AsRole.StatusCode = '01'
+                     ) AS Bene3 ON Bene3.PolicyGUID = AsPolicy.PolicyGUID AND Bene3.RowNum = 3
+LEFT JOIN AsClientField Occupation ON Occupation.ClientGUID = OwnerRole.ClientGUID
+       AND Occupation.FieldName = 'Occupation'
+LEFT JOIN AsClient PolicyOwner ON PolicyOwner.ClientGUID = OwnerRole.ClientGUID
+LEFT JOIN AsClientField Gender ON Gender.ClientGUID = PolicyOwner.ClientGUID
+       AND Gender.FieldName = 'Gender'
+	   
+LEFT JOIN AsClientField IdentificationNumber ON IdentificationNumber.ClientGUID = PolicyOwner.ClientGUID
+LEFT JOIN AsClientField MaritalStatusClientField ON MaritalStatusClientField.ClientGUID = PolicyOwner.ClientGUID
+       AND MaritalStatusClientField.fieldname = 'MaritalStatusClientField'
+LEFT JOIN AsClientField IdentityType ON IdentityType.ClientGUID = PolicyOwner.ClientGUID
+LEFT JOIN AsClientField Nationality ON Nationality.ClientGUID = PolicyOwner.ClientGUID
+LEFT JOIN AsClientField EmailAddress ON EmailAddress.ClientGUID = PolicyOwner.ClientGUID
+       AND EmailAddress.FieldName = 'EmailAddress'
+LEFT JOIN AsClientField MobilePhone ON MobilePhone.ClientGUID = PolicyOwner.ClientGUID
+       AND MobilePhone.FieldName = 'MobilePhone'
+LEFT JOIN AsClientField Bene1MobilePhone ON Bene1MobilePhone.ClientGUID = Bene1.ClientGUID
+       AND Bene1MobilePhone.FieldName = 'MobilePhone'
+	   LEFT JOIN AsClientField Bene1EmailAddress ON Bene1EmailAddress.ClientGUID = Bene1.ClientGUID
+       AND Bene1EmailAddress.FieldName = 'EmailAddress'
+	   
+	     LEFT JOIN AsClientField Bene1Gender ON Bene1Gender.ClientGUID = Bene1.ClientGUID
+       AND Bene1Gender.FieldName = 'Gender'
+	   
+	   LEFT JOIN AsClientField Bene1IdentificationNumber ON Bene1IdentificationNumber.ClientGUID = Bene1.ClientGUID
+	  AND Bene1IdentificationNumber.FieldName = 'IdentificationNumber'
+	  
+	  LEFT JOIN AsClientField Bene1IdentityType ON Bene1IdentityType.ClientGUID = Bene1.ClientGUID
+	         AND Bene1IdentityType.FieldName = 'IdentityType'
+	   
+	   
+
+LEFT JOIN AsClientField Bene2MobilePhone ON Bene2MobilePhone.ClientGUID = Bene2.ClientGUID
+       AND Bene2MobilePhone.FieldName = 'MobilePhone'
+	   
+	     LEFT JOIN AsClientField Bene2EmailAddress ON Bene2EmailAddress.ClientGUID = Bene2.ClientGUID
+       AND Bene2EmailAddress.FieldName = 'EmailAddress'
+	   
+	      LEFT JOIN AsClientField Bene2Gender ON Bene2Gender.ClientGUID = Bene2.ClientGUID
+       AND Bene2Gender.FieldName = 'Gender'
+	  LEFT JOIN AsClientField Bene2IdentificationNumber ON Bene2IdentificationNumber.ClientGUID = Bene2.ClientGUID
+	  AND Bene2IdentificationNumber.FieldName = 'IdentificationNumber'
+	  
+	   LEFT JOIN AsClientField Bene2IdentityType ON Bene2IdentityType.ClientGUID = Bene2.ClientGUID
+	         AND Bene2IdentityType.FieldName = 'IdentityType'
+
+
+
+LEFT JOIN AsClientField Bene3MobilePhone ON Bene3MobilePhone.ClientGUID = Bene3.ClientGUID
+       AND Bene3MobilePhone.FieldName = 'MobilePhone'
+	     LEFT JOIN AsClientField Bene3EmailAddress ON Bene3EmailAddress.ClientGUID = Bene3.ClientGUID
+       AND Bene3EmailAddress.FieldName = 'EmailAddress'
+
+	      LEFT JOIN AsClientField Bene3Gender ON Bene3Gender.ClientGUID = Bene3.ClientGUID
+       AND Bene3Gender.FieldName = 'Gender'
+	   
+	     LEFT JOIN AsClientField Bene3IdentificationNumber ON Bene3IdentificationNumber.ClientGUID = Bene3.ClientGUID
+	  AND Bene3IdentificationNumber.FieldName = 'IdentificationNumber'
+	   LEFT JOIN AsClientField Bene3IdentityType ON Bene3IdentityType.ClientGUID = Bene3.ClientGUID
+	         AND Bene3IdentityType.FieldName = 'IdentityType'
+	 
+LEFT JOIN AsClientField StateOfOrigin ON StateOfOrigin.ClientGUID = PolicyOwner.ClientGUID
+       AND StateOfOrigin.FieldName = 'StateOfOrigin'
+LEFT JOIN AsClientField LocalGovtOfOrigin ON LocalGovtOfOrigin.ClientGUID = PolicyOwner.ClientGUID
+       AND LocalGovtOfOrigin.FieldName = 'LocalGovtOfOrigin'
+LEFT JOIN (
+       SELECT ClientGUID
+              ,PostalAddress
+       FROM (
+              SELECT AsAddressRole.ClientGUID
+                     ,AsAddress.EffectiveDate
+                     ,AsAddress.AddressLine1 + ' ,' + NGCity.textValue + ' ,' + LocalGovernmentAreaCode.textValue + ' , ' + NGStateCode.OptionText + ' ,' + AsCountry.COUNTRYSHORTNAME PostalAddress
+                     ,ROW_NUMBER() OVER (
+                           PARTITION BY AsAddressRole.ClientGUID ORDER BY AsAddress.EffectiveDate DESC
+                           ) AS Row
+              FROM AsAddressRole
+              LEFT JOIN AsAddress ON AsAddressRole.AddressGUID = AsAddress.AddressGUID
+                     AND AsAddress.ExpirationDate IS NULL
+              JOIN AsCountry ON AsCountry.CountryCode = AsAddress.CountryCode
+              LEFT JOIN AsAddressField NGCity ON NGCity.AddressGUID = AsAddressRole.AddressGUID
+                     AND NGCity.FieldName = 'NGCity'
+              LEFT JOIN AsAddressField LocalGovernmentAreaCode ON LocalGovernmentAreaCode.AddressGUID = AsAddressRole.AddressGUID
+                     AND LocalGovernmentAreaCode.FieldName = 'LocalGovernmentArea'
+              LEFT JOIN AsAddressField NGStateCode ON NGStateCode.AddressGUID = AsAddressRole.AddressGUID
+                     AND NGStateCode.FieldName = 'NGStateCode'
+              WHERE AsAddressRole.AddressRoleCode = '14'
+              ) AS Postal
+       WHERE Row = '1'
+       ) PostalAddress ON PostalAddress.ClientGUID = PolicyOwner.ClientGUID
+LEFT JOIN (
+       SELECT ClientGUID
+              ,PostalAddress
+       FROM (
+              SELECT AsAddressRole.ClientGUID
+                     ,AsAddress.EffectiveDate
+                     ,AsAddress.AddressLine1 + ' ,' + NGCity.textValue + ' ,' + LocalGovernmentAreaCode.textValue + ' , ' + NGStateCode.OptionText + ' ,' + AsCountry.COUNTRYSHORTNAME PostalAddress
+                     ,ROW_NUMBER() OVER (
+                           PARTITION BY AsAddressRole.ClientGUID ORDER BY AsAddress.EffectiveDate DESC
+                           ) AS Row
+              FROM AsAddressRole
+              LEFT JOIN AsAddress ON AsAddressRole.AddressGUID = AsAddress.AddressGUID
+                     AND AsAddress.ExpirationDate IS NULL
+              JOIN AsCountry ON AsCountry.CountryCode = AsAddress.CountryCode
+              LEFT JOIN AsAddressField NGCity ON NGCity.AddressGUID = AsAddressRole.AddressGUID
+                     AND NGCity.FieldName = 'NGCity'
+              LEFT JOIN AsAddressField LocalGovernmentAreaCode ON LocalGovernmentAreaCode.AddressGUID = AsAddressRole.AddressGUID
+                     AND LocalGovernmentAreaCode.FieldName = 'LocalGovernmentArea'
+              LEFT JOIN AsAddressField NGStateCode ON NGStateCode.AddressGUID = AsAddressRole.AddressGUID
+                     AND NGStateCode.FieldName = 'NGStateCode'
+              WHERE AsAddressRole.AddressRoleCode = '14'
+              ) AS Postal
+       WHERE Row = '1'
+       ) Bene1PostalAddress ON Bene1PostalAddress.ClientGUID = Bene1.ClientGUID
+
+
+LEFT JOIN (
+       SELECT ClientGUID
+              ,PostalAddress
+       FROM (
+              SELECT AsAddressRole.ClientGUID
+                     ,AsAddress.EffectiveDate
+                     ,AsAddress.AddressLine1 + ' ,' + NGCity.textValue + ' ,' + LocalGovernmentAreaCode.textValue + ' , ' + NGStateCode.OptionText + ' ,' + AsCountry.COUNTRYSHORTNAME PostalAddress
+                     ,ROW_NUMBER() OVER (
+                           PARTITION BY AsAddressRole.ClientGUID ORDER BY AsAddress.EffectiveDate DESC
+                           ) AS Row
+              FROM AsAddressRole
+              LEFT JOIN AsAddress ON AsAddressRole.AddressGUID = AsAddress.AddressGUID
+                     AND AsAddress.ExpirationDate IS NULL
+              JOIN AsCountry ON AsCountry.CountryCode = AsAddress.CountryCode
+              LEFT JOIN AsAddressField NGCity ON NGCity.AddressGUID = AsAddressRole.AddressGUID
+                     AND NGCity.FieldName = 'NGCity'
+              LEFT JOIN AsAddressField LocalGovernmentAreaCode ON LocalGovernmentAreaCode.AddressGUID = AsAddressRole.AddressGUID
+                     AND LocalGovernmentAreaCode.FieldName = 'LocalGovernmentArea'
+              LEFT JOIN AsAddressField NGStateCode ON NGStateCode.AddressGUID = AsAddressRole.AddressGUID
+                     AND NGStateCode.FieldName = 'NGStateCode'
+              WHERE AsAddressRole.AddressRoleCode = '14'
+              ) AS Postal
+       WHERE Row = '1'
+       ) Bene2PostalAddress ON Bene2PostalAddress.ClientGUID = Bene2.ClientGUID
+
+LEFT JOIN (
+       SELECT ClientGUID
+              ,PostalAddress
+       FROM (
+              SELECT AsAddressRole.ClientGUID
+                     ,AsAddress.EffectiveDate
+                     ,AsAddress.AddressLine1 + ' ,' + NGCity.textValue + ' ,' + LocalGovernmentAreaCode.textValue + ' , ' + NGStateCode.OptionText + ' ,' + AsCountry.COUNTRYSHORTNAME PostalAddress
+                     ,ROW_NUMBER() OVER (
+                           PARTITION BY AsAddressRole.ClientGUID ORDER BY AsAddress.EffectiveDate DESC
+                           ) AS Row
+              FROM AsAddressRole
+              LEFT JOIN AsAddress ON AsAddressRole.AddressGUID = AsAddress.AddressGUID
+                     AND AsAddress.ExpirationDate IS NULL
+              JOIN AsCountry ON AsCountry.CountryCode = AsAddress.CountryCode
+              LEFT JOIN AsAddressField NGCity ON NGCity.AddressGUID = AsAddressRole.AddressGUID
+                     AND NGCity.FieldName = 'NGCity'
+              LEFT JOIN AsAddressField LocalGovernmentAreaCode ON LocalGovernmentAreaCode.AddressGUID = AsAddressRole.AddressGUID
+                     AND LocalGovernmentAreaCode.FieldName = 'LocalGovernmentArea'
+              LEFT JOIN AsAddressField NGStateCode ON NGStateCode.AddressGUID = AsAddressRole.AddressGUID
+                     AND NGStateCode.FieldName = 'NGStateCode'
+              WHERE AsAddressRole.AddressRoleCode = '14'
+              ) AS Postal
+       WHERE Row = '1'
+       ) Bene3PostalAddress ON Bene3PostalAddress.ClientGUID = Bene3.ClientGUID
+
+
+
+
+
+LEFT JOIN (
+       SELECT ap.policynumber AS POLNUM
+              ,COALESCE(SUM(CAST(am.MathValue AS DECIMAL(10, 2))), 0) TotalGross
+       FROM aspolicy AS ap
+       JOIN asactivity AS aa ON ap.PolicyGUID = aa.PolicyGUID
+       JOIN AsTransaction AS at ON at.TransactionGUID = aa.TransactionGUID
+       JOIN AsActivityMath AS am ON am.ActivityGUID = aa.ActivityGUID
+       WHERE at.TransactionName = 'PremiumApplied'
+              AND am.MathName = 'GrossPremiumAmount'
+              AND aa.StatusCode = '01'
+              AND aa.TypeCode IN (
+                     '01'
+                     ,'04'
+                     )
+       GROUP BY policynumber
+       ) AS TOTGROSPR ON AsPolicy.PolicyNumber = TOTGROSPR.POLNUM
+LEFT JOIN (
+       SELECT Pol.PolicyNumber PolNum
+              ,Act.EffectiveDate EffDate
+       FROM AsPolicy Pol
+       JOIN AsActivity Act ON Act.PolicyGUID = Pol.PolicyGUID
+              AND Act.TypeCode IN (
+                     '01'
+                     ,'04'
+                     )
+              AND Act.StatusCode IN (
+                     '02'
+                     ,'09'
+                     )
+       JOIN AsTransaction Trxn ON Trxn.TransactionGUID = Act.TransactionGUID
+              AND Trxn.TransactionName = 'Anniversary'
+       ) AS Anniv ON Anniv.PolNum = AsPolicy.PolicyNumber
+LEFT JOIN AsPolicyField MedicalsWaived ON MedicalsWaived.PolicyGUID = AsPolicy.PolicyGUID
+       AND MedicalsWaived.FieldName = 'MedicalsWaived'
+LEFT JOIN AsPolicyField CessionType ON CessionType.PolicyGUID = AsPolicy.PolicyGUID
+       AND CessionType.FieldName = 'CollateralType'
+LEFT JOIN AsPolicyField CessionName ON CessionName.PolicyGUID = AsPolicy.PolicyGUID
+       AND CessionName.FieldName = 'CessionaryName'
+LEFT JOIN AsPolicyField CessionRegistration ON CessionRegistration.PolicyGUID = AsPolicy.PolicyGUID
+       AND CessionRegistration.FieldName = 'CessionRegistrationDate'
+LEFT JOIN AsPolicyField CessionDeregistration ON CessionDeregistration.PolicyGUID = AsPolicy.PolicyGUID
+       AND CessionDeregistration.FieldName = 'CessionCancellationDate'
+LEFT JOIN AsPolicyField PolicyMaturityDate ON PolicyMaturityDate.PolicyGUID = AsPolicy.PolicyGUID
+       AND PolicyMaturityDate.FieldName = 'MaturityDate'
+WHERE IdentificationNumber.FieldName = 'IdentificationNumber'
+       AND IdentityType.FieldName = 'IdentityType'
+       AND Nationality.FieldName = 'Nationality'
+
